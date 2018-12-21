@@ -13,7 +13,7 @@ func main() {
 	// - handlebars     | iris.Handlebars(...)
 	// - amber          | iris.Amber(...)
 
-	tmpl := iris.HTML("./templates", ".html")
+	tmpl := iris.HTML("./templates", "html")
 	tmpl.Reload(true) // reload templates on each request (development mode)
 	// default template funcs are:
 	//
@@ -37,7 +37,7 @@ func hi(ctx iris.Context) {
 	ctx.ViewData("Title", "Hi Page")
 	ctx.ViewData("Name", "iris") // {{.Name}} will render: iris
 	// ctx.ViewData("", myCcustomStruct{})
-	ctx.View("hi.html")
+	ctx.View("index.html")
 }
 
 /*
