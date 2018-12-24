@@ -30,7 +30,7 @@ func main() {
 	app.Get("/", hi)
 
 	// http://localhost:8080
-	app.Run(iris.Addr(":8080"), iris.WithCharset("UTF-8")) // defaults to that but you can change it.
+	app.Run(iris.Addr(":80"), iris.WithCharset("UTF-8")) // defaults to that but you can change it.
 }
 
 func hi(ctx iris.Context) {
