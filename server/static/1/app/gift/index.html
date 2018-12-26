@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>讨红包</title>
+    <link rel="stylesheet" href="../../assets/css/weui.min.css?v=0.1"/>
+    <link rel="stylesheet" href="../../css/style.css?v=0.1"/>
+    <style>
+        @media (min-width: 768px) {
+            .hd {width:50%;margin:0 auto;}
+            .bd {width:50%;margin:0 auto;}
+        }
+    </style>
+</head>
+<body ontouchstart>
+<div class="container" id="container">
+
+    <div class="hd">
+        <h2 class="page_title"><img width="100%" src="askgift.jpg"/>
+        </h2>
+    </div>
+    <div class="bd spacing">
+        <button class="weui_btn weui_btn_warn" id="btnAsk4Gift">要个红包</button>
+    </div>
+    <div class="bd">
+        <div class="weui_cells" id="divGiftLogs">
+            <article class="weui_article">
+                <section>
+                    <h2 class="title">红包说明</h2>
+                    <section>
+                        <p>在以太坊区块链进行合约操作需要花费以太币</p>
+                        <p>为了方便大家学习使用，该红包功能提供用户直接申领一定数量的以太币（测试币）</p>
+                        <p>每个地址每天只能申领一次，每天总共100个红包</p>
+                        <p class="weui_icon_safe_warn">该金额仅在测试链有效，不能在正式链使用</p>
+                    </section>
+                    <section>
+                        <p>&nbsp;</p>
+                    </section>
+                </section>
+            </article>
+        </div>
+    </div>
+
+</div>
+
+<div class="weui_tabbar" id="div_tabbar">
+    <a href="../../index.html" class="weui_tabbar_item weui_bar_item_on">
+        <div class="weui_tabbar_icon">
+            <img src="../../img/icon_home.png" alt="">
+        </div>
+        <p class="weui_tabbar_label">首页</p>
+    </a>
+    <a href="javascript:;" class="weui_tabbar_item weui_bar_item_on" onclick="javascript:loadGiftLogs();">
+        <div class="weui_tabbar_icon">
+            <img src="../../img/icon_history.png" alt="">
+        </div>
+        <p class="weui_tabbar_label">红包记录</p>
+    </a>
+</div>
+<script type="text/template" id="tpl_gift_log">
+    {@each txs as item,index}
+    <div class="weui_cell">
+        <div class="weui_cell_bd weui_cell_primary">
+            <p>${item.time}</p>
+        </div>
+        <div class="weui_cell_ft">${item.amount}</div>
+    </div>
+    {@/each}
+</script>
+<script src="../../assets/js/shims/es6-shim.min.js?v=0.1"></script>
+<script src="../../assets/js/juicer/juicer-min.js?v=0.1"></script>
+<script src="../../assets/js/zepto/zepto.min.js?v=0.1"></script>
+<script src="../../assets/js/eth/ethereumjs-all.min.js?v=0.1"></script>
+<script src="../../assets/js/eth/web3/web3.min.js?v=0.2"></script>
+<script src="../../js/utils.js?v=0.1"></script>
+<script src="../../js/config.js?v=0.2"></script>
+<script language="JavaScript">
+    $(function () {
+        $('#btnAsk4Gift').bind('click',askForGift);
+    });
+    function askForGift() {
+        try {
+            $.post('http://rdcqii.hundsun.com/wallet/apps/gift/ask4gift.do', {"address": global.wallet.getAddressString()}, function (r, e) {
+                if (e == 'success') {
+                    if (r.result == 'success') {
+                        $.alert('提示信息', '<i class="weui_icon_success"></i>&nbsp;' + r.message);
+                    } else {
+                        $.alert('警告信息', '<i class="weui_icon_warn"></i>&nbsp;' + r.message);
+                    }
+
+                } else {
+                    alert('系统错误', e);
+                }
+            });
+        }catch(err) {
+            alert(err);
+        }
+
+    }
+    function loadGiftLogs() {
+        $.getJSON('http://rdcqii.hundsun.com/wallet/apps/gift/history.do?address=' + global.wallet.getAddressString(), function (r, e) {
+            if (e == 'success') {
+                var txs = r;
+                var tpl = juicer($('#tpl_gift_log').html());
+                for (var i in txs) {
+                    var tx = txs[i];
+                    var dt = new Date(tx.time);
+                    tx.time = dt.toLocaleDateString() + " " + dt.getHours() + ':' + dt.getMinutes();
+                    tx.amount = web3.fromWei(tx.amount, 'ether');
+                }
+
+                $('#divGiftLogs').html(tpl.render({"txs":txs}));
+                return true;
+            } else {
+                $.alert('系统错误', e);
+            }
+        })
+    }
+</script>
+</body>
+</html>

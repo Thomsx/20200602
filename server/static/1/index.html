@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-CN">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>以太坊轻应用(TESTNET)</title>
+    <link rel="stylesheet" href="assets/css/weui.min.css?v=0.1"/>
+    <link rel="stylesheet" href="./css/style.css?v=0.1"/>
+</head>
+<body ontouchstart>
+<div class="container" id="container"></div>
+
+<script type="text/template" id="tpl_home">
+    <div class="hd">
+        <h1 class="page_title"><a href="javascript:$('#dialog_profile').show();"><img height="80px" src="./img/${network}.png"/></a>
+        </h1>
+        <p class="page_desc">
+            我的以太币: <span id='ethBalance'>0.00</span>&nbsp;Ether&nbsp;(<a href="javascript:;">${network.toUpperCase()}</a>)
+        </p>
+    </div>
+    <div class="bd">
+        <div class="weui_grids">
+            {@each apps as app, index}
+            <a href="${app.url}" {@if app.iscontract} style=" background-image:url('./img/mask-contract.png');background-repeat:no-repeat" {@/if} {@if app.login}onclick="return checkLogin('${app.url}');"  {@/if} class="weui_grid" data-toggle="modal" data-type="ajax">
+                <div class="weui_grid_icon">
+                    <img src="${app.icon}"/>
+                    <i class="icon icon_button"></i>
+                </div>
+                <p class="weui_grid_label">
+                    ${app.name}
+                </p>
+            </a>
+            {@/each}
+        </div>
+    </div>
+    <div class="weui_dialog_confirm" id='dlg_selectnet' style="display:none;">
+        <div class="weui_mask"></div>
+        <div class="weui_dialog">
+            <div class="weui_dialog_hd"><strong class="weui_dialog_title">选择网络</strong></div>
+            <div class="weui_dialog_bd weui_cells weui_cells_radio">
+                    <label class="weui_cell weui_check_label" for="x11">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>主网络(Main Net)</p>
+                        </div>
+                        <div class="weui_cell_ft">
+                            <input type="radio" class="weui_check" name="radioNet" id="x11" {@if network==='main'}checked="checked"{@/if} value="main">
+                            <span class="weui_icon_checked"></span>
+                        </div>
+                    </label>
+                    <label class="weui_cell weui_check_label" for="x12">
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>测试链(Test Net)</p>
+                        </div>
+                        <div class="weui_cell_ft">
+                            <input type="radio" name="radioNet" class="weui_check" id="x12" {@if network==='test'}checked="checked"{@/if} value="test">
+                            <span class="weui_icon_checked"></span>
+                        </div>
+                    </label>
+            </div>
+            <div class="weui_dialog_ft">
+                <a href="javascript:;" onclick="$('#dlg_selectnet').off('click').hide();" class="weui_btn_dialog default">取消</a>
+                <a href="javascript:changeNet();" class="weui_btn_dialog primary">确定</a>
+            </div>
+        </div>
+    </div>
+    <div class="weui_dialog_alert" id="dialog_profile" style="display: none;">
+        <div class="weui_mask"></div>
+        <div class="weui_dialog">
+            <div class="weui_dialog_hd"><strong class="weui_dialog_title">我的钱包</strong></div>
+            <div class="weui_dialog_bd bd ">
+                <div class="weui_cells_title" style="margin-top:-0.6em;">${wallet.getAddressString()}</div>
+                <div class="cparea">
+                <div class="weui_cells_tips kwd" id="kwd">
+                    <span>${keyObject}</span>
+                </div>
+                </div>
+                <div class="weui_cells_tips">长按选择钱包内容并备份</div>
+            </div>
+            <div class="weui_dialog_ft">
+                <a href="javascript:;" onclick="$('#dialog_profile').off('click').hide();" class="weui_btn_dialog primary">确定</a>
+            </div>
+        </div>
+    </div>
+    <div class="weui_tabbar">
+        <a href="javascript:$.alert('说明','<p>本应用是基于以太坊区块链的H5轻应用</p><p>其中积分和竞猜是以太坊智能合约，页面只是提供了访问以太坊服务的界面，后台服务逻辑及运行均在无中心、分布式的区块链上节点上运行</p><br/><p class=weui_icon_safe_warn>区块链的私钥仅存储在本地客户端，请务必备份好钱包</p>');" class="weui_tabbar_item weui_bar_item_on">
+            <div class="weui_tabbar_icon">
+                <img src="img/icon_about.png" alt="">
+            </div>
+            <p class="weui_tabbar_label">金链盟以太坊轻应用示例(V0.30a)</p>
+        </a>
+    </div>
+</script>
+<script language="JavaScript">
+    var path = document.location.pathname;
+    var rootContext = path.substring(0, path.lastIndexOf('/'));
+    window.localStorage.setItem('rootContext', rootContext);
+</script>
+<script src="assets/js/shims/es6-shim.min.js?v=0.1"></script>
+<script src="assets/js/juicer/juicer-min.js?v=0.1"></script>
+<script src="assets/js/zepto/zepto.min.js?v=0.1"></script>
+<script src="assets/js/router.min.js?v=0.2"></script>
+<script src="assets/js/eth/ethereumjs-all.min.js?v=0.1"></script>
+<script src="assets/js/eth/web3/web3.min.js?v=0.2"></script>
+<script src="./js/utils.js?v=0.1"></script>
+<script src="./js/config.js?v=0.2"></script>
+<script src="./index.js?v=0.2"></script>
+</body>
+</html>
