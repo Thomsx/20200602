@@ -21,8 +21,15 @@ type Seaman struct {
 	/*以下为海员信息*/
 }
 
-//用户认证为企业
-type Enterprise struct {
+//用户认证为船东
+type Shipowner struct {
+	User
+	/*企业信息*/
+	Edomain string //企业域名
+}
+
+//用户认证为船员管理公司
+type CrewManage struct {
 	User
 	/*企业信息*/
 	Edomain string //企业域名
